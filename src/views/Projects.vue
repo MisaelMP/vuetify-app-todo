@@ -1,6 +1,6 @@
 <template lang="html">
     <div class="projects">
-        <h1 class="">Projects</h1>
+        <h1 class="subheading grey--text">Projects</h1>
     </div>
 
 </template>
