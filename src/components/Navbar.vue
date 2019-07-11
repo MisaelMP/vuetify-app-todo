@@ -1,5 +1,9 @@
 <template>
 <nav>
+    <v-snackbar v-model="snackbar" :timeout="4000" top color="primary">
+      <span>You have added a new project!</span>
+      <v-btn flat color="white" @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
     <v-toolbar flat app>
         <v-toolbar-side-icon class="grey--text" @click="drawer = !drawer"></v-toolbar-side-icon>
         <v-toolbar-title class="text-uppercase">
@@ -22,11 +26,8 @@
                 </v-list-tile>
             </v-list>
         </v-menu>
-
-        <v-btn flat color="grey">
-            <span>Sign Out</span>
-            <v-icon right>exit_to_app</v-icon>
-        </v-btn>
+        <Join />
+       <Signin />
     </v-toolbar>
     <v-navigation-drawer temporary v-model="drawer" app class="indigo">
         <v-layout column align-center>
@@ -37,7 +38,7 @@
                 <p class="white--text subheading mt-1">Misael Mercado</p>
             </v-flex>
             <v-flex class="mt-4 mb-4">
-                <Popup />
+                <Popup @ProjectAdded="snackbar = true" />
             </v-flex>
         </v-layout>
         <v-list>
@@ -56,8 +57,11 @@
 
 <script>
 import Popup from './Popup.vue'
+import Join from './Join.vue'
+import Signin from './Signin.vue'
+
 export default {
-    components: { Popup },
+    components: { Popup, Join, Signin },
     data() {
         return {
             drawer: false,
@@ -65,7 +69,8 @@ export default {
                 { icon: 'dashboard', text: 'Dashboard', route: '/' },
                 { icon: 'folder', text: 'Projects', route: '/projects' },
                 { icon: 'person', text: 'Teams', route: '/teams' }
-            ]
+            ],
+            snackbar: false
         }
     }
 }

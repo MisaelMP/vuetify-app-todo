@@ -1,6 +1,7 @@
 <template>
-<v-dialog max-width="600px" transition="dialog-transition">
-    <v-btn slot="activator" depressed color="#f6db4e" class="dark--text">Add new project</v-btn>
+<v-dialog max-width="600px" transition="dialog-transition" v-model="dialog">
+    <v-btn slot="activator" depressed color="#f6db4e" class="dark--text">Add new project
+    </v-btn>
     <v-card>
         <v-card-title>
             <h2>Add a New Project</h2>
@@ -15,7 +16,7 @@
                     <v-date-picker v-model="due" color="indigo" :reactive="true"></v-date-picker>
                 </v-menu>
                 <v-spacer></v-spacer>
-                <v-btn depressed color="#f6db4e" class="dark--text mx-0 mt-3 text-uppercase" type="submit">Add Project</v-btn>
+                <v-btn depressed color="#f6db4e" class="dark--text mx-0 mt-3 text-uppercase" type="submit" :loading="loading">Add Project</v-btn>
             </v-form>
         </v-card-text>
     </v-card>
@@ -24,6 +25,7 @@
 
 <script>
 import format from 'date-fns/format'
+import db from '@/fb'
 
 export default {
     data() {
@@ -31,18 +33,32 @@ export default {
             title: '',
             content: '',
             due: null,
-            errors: [],
             inputRules: [
                 v => v.length >= 3 || 'Minimum length is 3 characters'
-            ]
+            ],
+            loading: false,
+            dialog: false
         }
     },
     methods: {
         submit(e) {
             e.preventDefault();
             if (this.$refs.form.validate()) {
-                console.log(this.title, this.content);
+                this.loading = true;
 
+                const project = {
+                    title: this.title,
+                    content: this.content,
+                    due: format(this.due, 'Do MMM YYYY'),
+                    person: 'Misael Mercado',
+                    status: 'ongoing'
+                }
+
+                db.collection('projects').add(project).then(() => {
+                    this.loading = false;
+                    this.dialog = false;
+                    this.$emit('ProjectAdded');
+                })
             }
         }
     },
